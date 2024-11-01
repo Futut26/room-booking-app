@@ -1,0 +1,112 @@
+<%- include('../../partials/header'); %>
+<div class="container-fluid">
+    <%- include('../../partials/navbar'); %>
+    <div class="container">
+        <div class="d-flex justify-content-between mt-3">
+            <h2>Daftar Pemesanan</h2>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBookingModal">Tambah Pemesanan</button>
+        </div>
+
+        <% if (successMessages && successMessages.length > 0) { %>
+            <div class="alert alert-success" role="alert">
+                <%= successMessages %>
+            </div>
+        <% } %>
+
+        <% if (errorMessages && errorMessages.length > 0) { %>
+            <div class="alert alert-danger" role="alert">
+                <%= errorMessages %>
+            </div>
+        <% } %>
+
+        <table class="table table-striped mt-3">
+            <thead>
+                <tr class="text-center">
+                    <th scope="col">No</th>
+                    <th scope="col">Nama Pelanggan</th>
+                    <th scope="col">Telepon</th>
+                    <th scope="col">Alamat</th>
+                    <th scope="col">Tanggal</th>
+                    <th scope="col">Waktu Mulai</th>
+                    <th scope="col">Waktu Selesai</th>
+                    <th scope="col">ID Ruangan</th>
+                    <th scope="col">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                <% bookings.forEach((booking, index) => { %>
+                    <tr>
+                        <th scope="row"><%= index + 1 %></th>
+                        <td><%= booking.customer_name %></td>
+                        <td><%= booking.customer_phone %></td>
+                        <td><%= booking.customer_addr %></td>
+                        <td><%= booking.date %></td>
+                        <td><%= booking.start_time %></td>
+                        <td><%= booking.end_time %></td>
+                        <td><%= booking.room_id %></td>
+                        <td class="d-flex justify-content-center gap-1">
+                            <a href="/bookings/edit/<%= booking.id %>" class="btn btn-warning">Edit</a>
+                            <form action="/bookings/delete/<%= booking.id %>" method="POST">
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+
+        <!-- Modal Tambah Pemesanan -->
+        <div class="modal fade" id="addBookingModal" tabindex="-1" aria-labelledby="addBookingModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="addBookingModalLabel">Tambah Pemesanan</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/bookings" method="POST">
+                            <div class="mb-3">
+                                <label for="customerName" class="form-label">Nama Pelanggan</label>
+                                <input type="text" class="form-control" id="customerName" name="customer_name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="customerPhone" class="form-label">Telepon</label>
+                                <input type="text" class="form-control" id="customerPhone" name="customer_phone" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="customerAddr" class="form-label">Alamat</label>
+                                <textarea class="form-control" id="customerAddr" rows="3" name="customer_addr" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="bookingDate" class="form-label">Tanggal</label>
+                                <input type="date" class="form-control" id="bookingDate" name="date" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="startTime" class="form-label">Waktu Mulai</label>
+                                <input type="time" class="form-control" id="startTime" name="start_time" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="endTime" class="form-label">Waktu Selesai</label>
+                                <input type="time" class="form-control" id="endTime" name="end_time" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="roomId" class="form-label">ID Ruangan</label>
+                                <select class="form-select" id="roomId" name="room_id" required>
+                                    <option value="">Pilih Ruangan</option>
+                                    <% rooms.forEach(room => { %>
+                                        <option value="<%= room.room_id %>"><%= room.r_name %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Simpan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('../../partials/footer'); %>

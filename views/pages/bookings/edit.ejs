@@ -1,0 +1,56 @@
+<%- include('../../partials/header'); %>
+    <div class="container">
+        <h2>Edit Pemesanan</h2>
+
+        <% if (errorMessages && errorMessages.length> 0) { %>
+            <div class="alert alert-danger" role="alert">
+                <%= errorMessages %>
+    </div>
+  <% } %>
+
+  <% if (successMessages && successMessages.length > 0) { %>
+    <div class="alert alert-success" role="alert">
+      <%= successMessages%>
+    </div>
+  <% } %>
+
+  <form action="/bookings/update/<%= booking.id %>" method="POST">
+    <div class="mb-3">
+      <label for="customerName" class="form-label">Nama Pelanggan</label>
+      <input type="text" class="form-control" id="customerName" name="customer_name" value="<%= booking.customer_name %>" required>
+    </div>
+    <div class="mb-3">
+      <label for="customerPhone" class="form-label">Telepon</label>
+      <input type="text" class="form-control" id="customerPhone" name="customer_phone" value="<%= booking.customer_phone %>" required>
+    </div>
+    <div class="mb-3">
+      <label for="customerAddr" class="form-label">Alamat</label>
+      <textarea class="form-control" id="customerAddr" rows="3" name="customer_addr" required><%= booking.customer_addr %></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="bookingDate" class="form-label">Tanggal</label>
+      <input type="date" class="form-control" id="bookingDate" name="date" value="<%= booking.date.toISOString().substring(0, 10) %>" required>
+    </div>
+    <div class="mb-3">
+      <label for="startTime" class="form-label">Waktu Mulai</label>
+      <input type="time" class="form-control" id="startTime" name="start_time" value="<%= booking.start_time %>" required>
+    </div>
+    <div class="mb-3">
+      <label for="endTime" class="form-label">Waktu Selesai</label>
+      <input type="time" class="form-control" id="endTime" name="end_time" value="<%= booking.end_time %>" required>
+    </div>
+    <div class="mb-3">
+      <label for="roomId" class="form-label">ID Ruangan</label>
+      <select class="form-select" id="roomId" name="room_id" required>
+        <option value="">Pilih Ruangan</option>
+        <% rooms.forEach(room => { %>
+          <option value="<%= room.room_id %>" <%= room.room_id == booking.room_id ? ' selected' : '' %>><%= room.r_name
+                        %>
+                        </option>
+                        <% }) %>
+                            </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Pemesanan</button>
+            </form>
+    </div>
+    <%- include('../../partials/footer'); %>
