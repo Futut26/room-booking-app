@@ -55,7 +55,8 @@
                                                 </td>
                                                 <td>
                                                     <!-- confert to rp -->
-                                                      <%= room.r_price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).replace('IDR', '').trim() %>
+                                                    <%= room.r_price.toLocaleString('id-ID', { style: 'currency' ,
+                                                        currency: 'IDR' }).replace('IDR', '' ).trim() %>
                                                 </td>
                                                 <td>
                                                     <%= room.r_description %>
