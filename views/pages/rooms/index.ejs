@@ -1,0 +1,124 @@
+<%- include('../../partials/header'); %>
+    <div class="container-fluid">
+        <%- include('../../partials/navbar'); %>
+            <div class="container">
+                <!-- Button Tambah Data -->
+                <div class="d-flex justify-content-between mt-3">
+
+                    <h2>Room Management</h2>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Tambah
+                        Data</button>
+                </div>
+
+                <% if (successMessages && successMessages.length> 0) { %>
+                    <div class="alert alert-success" role="alert">
+                        <%= successMessages %>
+                    </div>
+                    <% } %>
+
+                        <% if (errorMessages && errorMessages.leght> 0 ) { %>
+                            <div class="alert alert-danger" role="alert">
+                                <%= errorMessages %>
+                            </div>
+                            <% } %>
+
+
+                                <!-- Table Data Ruangan -->
+                                <table class="table table-striped mt-3">
+                                    <thead>
+                                        <tr class="text-center">
+                                            <th scope="col">No</th>
+                                            <th scope="col">Room Name</th>
+                                            <th scope="col">Room Type</th>
+                                            <th scope="col">Room Capacity</th>
+                                            <th scope="col">Room Price</th>
+                                            <th scope="col">Room Description</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-center">
+
+                                        <!-- { rooms: results, errorMessages, successMessages } -->
+                                        <% rooms.forEach((room, index)=> { %>
+                                            <tr>
+                                                <th scope="row">
+                                                    <%= index + 1 %>
+                                                </th>
+                                                <td>
+                                                    <%= room.r_name %>
+                                                </td>
+                                                <td>
+                                                    <%= room.r_type %>
+                                                </td>
+                                                <td>
+                                                    <%= room.r_capacity %>
+                                                </td>
+                                                <td>
+                                                    <!-- confert to rp -->
+                                                      <%= room.r_price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).replace('IDR', '').trim() %>
+                                                </td>
+                                                <td>
+                                                    <%= room.r_description %>
+                                                </td>
+                                                <td class="d-flex justify-content-center gap-1">
+                                                    <a href="/data-ruangan/edit/<%= room.room_id %>"
+                                                        class="btn btn-warning">Edit</a>
+
+                                                    <form action="/data-ruangan/delete/<%= room.room_id %>"
+                                                        method="POST">
+                                                        <button type="submit" class="btn btn-danger"
+                                                            onclick="return confirm('Are you sure?')">Delete</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            <% }) %>
+                                    </tbody>
+                                </table>
+            </div>
+
+
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Tambah data data ruangan</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/data-ruangan" method="POST">
+                                <div class="mb-3">
+                                    <label for="roomName" class="form-label">Room Name</label>
+                                    <input type="text" class="form-control" id="roomName" name="r_name">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="roomType" class="form-label">Room Type</label>
+                                    <input type="text" class="form-control" id="roomType" name="r_type">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="roomCapacity" class="form-label">Room Capacity</label>
+                                    <input type="number" class="form-control" id="roomCapacity" name="r_capacity">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="roomPrice" class="form-label">Room Price</label>
+                                    <input type="number" class="form-control" id="roomPrice" name="r_price">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="roomDescription" class="form-label">Room Description</label>
+                                    <textarea class="form-control" id="roomDescription" rows="3"
+                                        name="r_description"></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <%- include('../../partials/footer'); %>

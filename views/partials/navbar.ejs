@@ -1,0 +1,26 @@
+<nav class="navbar sticky-top bg-body-tertiary">
+    <div class="px-5 py-2 d-flex gap-5">
+        <a type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions"
+            aria-controls="offcanvasWithBothOptions">
+            <i class="bi bi-list fs-3"></i>
+        </a>
+        <a class="navbar-brand" href="#">Dashboard Room Booking App</a>
+    </div>
+</nav>
+
+<div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
+    aria-labelledby="offcanvasWithBothOptionsLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Booking Room Management </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="list-group mb-3">
+            <a href="/" class="list-group-item list-group-item-action">Dashboard</a>
+            <a href="/data-ruangan" class="list-group-item list-group-item-action">Room Management</a>
+            <a href="#" class="list-group-item list-group-item-action">Customer Management</a>
+            
+          </div>
+        <a href="/logout" class="btn btn-secondary">Logout</a>
+    </div>
+</div>

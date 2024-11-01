@@ -34,10 +34,9 @@ function isAuthenticated(req, res, next) {
 
 // Route: Halaman Login
 app.get('/login', (req, res) => {
-    const errorMessages = req.session.errorMessages || [];
-    delete req.session.errorMessages;
-  res.render('login', { errorMessages });
-
+  const errorMessages = req.session.errorMessages || [];
+  delete req.session.errorMessages;
+  res.render('pages/login/index', { errorMessages });
 });
 
 //Proses Login
@@ -52,17 +51,13 @@ app.post('/login', (req, res) => {
     if (match) {
       req.session.user = user;
       return res.redirect('/');
-      
     } else {
-        // send alert
-
-        req.session.errorMessages = ['Username atau password salah'];
-
+      // send alert
+      req.session.errorMessages = ['Username atau password salah'];
       res.redirect('/login');
     }
   });
 });
-
 
 app.get('/logout', (req, res) => {
   req.session.destroy();
@@ -71,26 +66,87 @@ app.get('/logout', (req, res) => {
 
 // Halaman Utama
 app.get('/', isAuthenticated, (req, res) => {
-  res.render('index', { user: req.session.user });
+  res.render('pages/dashboard/index', { user: req.session.user });
 });
 
-// CRUD Routes untuk Peminjaman Ruangan
-// List Peminjaman
-app.get('/bookings', isAuthenticated, (req, res) => {
-  db.query('SELECT * FROM bookings', (err, results) => {
+app.get('/data-ruangan', isAuthenticated, (req, res) => {
+  const errorMessages = req.session.errorMessages || [];
+  const successMessages = req.session.successMessages || [];
+
+  delete req.session.errorMessages;
+  delete req.session.successMessages;
+
+  db.query('SELECT * FROM m_rooms', (err, results) => {
     if (err) throw err;
-    res.render('bookings', { bookings: results });
+    res.render('pages/rooms/index', { rooms: results, errorMessages, successMessages });
   });
 });
 
-// Tambah Peminjaman
-app.post('/bookings', isAuthenticated, (req, res) => {
-  const { room_name, booked_by, date, start_time, end_time } = req.body;
-  db.query('INSERT INTO bookings (room_name, booked_by, date, start_time, end_time) VALUES (?, ?, ?, ?, ?)', [room_name, booked_by, date, start_time, end_time], (err, result) => {
-    if (err) throw err;
-    res.redirect('/bookings');
+app.post('/data-ruangan', isAuthenticated, (req, res) => {
+  const { r_name, r_type, r_capacity, r_price, r_description } = req.body;
+  db.query('INSERT INTO m_rooms (r_name, r_type, r_capacity, r_price, r_description) VALUES (?, ?, ?, ?, ?)', [r_name, r_type, r_capacity, r_price, r_description], (err, result) => {
+    if (err) {
+      req.session.errorMessages = ['Gagal menambahkan data ruangan.'];
+    } else {
+      req.session.successMessages = ['Berhasil menambahkan data ruangan.'];
+    }
+    res.redirect('/data-ruangan');
   });
 });
+
+app.post('/data-ruangan/delete/:room_id', isAuthenticated, (req, res) => {
+  const { room_id } = req.params;
+
+  db.query('DELETE FROM m_rooms WHERE room_id = ?', [room_id], (err, result) => {
+    if (err) {
+      req.session.errorMessages = ['Gagal menghapus data ruangan.'];
+    } else {
+      req.session.successMessages = ['Berhasil menghapus data ruangan.'];
+    }
+    res.redirect('/data-ruangan');
+  });
+});
+
+app.get('/data-ruangan/edit/:room_id', isAuthenticated, (req, res) => {
+  const { room_id } = req.params;
+
+  db.query('SELECT * FROM m_rooms WHERE room_id = ?', [room_id], (err, results) => {
+    if (err) {
+      req.session.errorMessages = ['Gagal mengambil data ruangan.'];
+      return res.redirect('/data-ruangan');
+    }
+
+    if (results.length === 0) {
+      req.session.errorMessages = ['Data ruangan tidak ditemukan.'];
+      return res.redirect('/data-ruangan');
+    }
+
+    const room = results[0];
+    res.render('pages/rooms/edit', { room }); // Render halaman detail atau edit dengan data room
+  });
+});
+
+
+// Update data ruangan berdasarkan room_id
+app.post('/data-ruangan/update/:room_id', isAuthenticated, (req, res) => {
+  const { room_id } = req.params;
+  const { r_name, r_type, r_capacity, r_price, r_description } = req.body;
+
+  db.query(
+    'UPDATE m_rooms SET r_name = ?, r_type = ?, r_capacity = ?, r_price = ?, r_description = ? WHERE id = ?',
+    [r_name, r_type, r_capacity, r_price, r_description, room_id],
+    (err, result) => {
+      if (err) {
+        req.session.errorMessages = ['Gagal memperbarui data ruangan.'];
+      } else {
+        req.session.successMessages = ['Data ruangan berhasil diperbarui.'];
+      }
+      res.redirect('/data-ruangan');
+    }
+  );
+});
+
+
 
 // Update Peminjaman
 app.post('/bookings/edit/:id', isAuthenticated, (req, res) => {
